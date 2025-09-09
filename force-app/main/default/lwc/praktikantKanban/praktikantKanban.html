@@ -1,0 +1,190 @@
+<template>
+    <lightning-card title="Praktikant Kanban Board" icon-name="standard:kanban">
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+        </template>
+
+        <!-- Kanban Board Container -->
+        <div class="kanban-container" if:false={isLoading}>
+            <!-- Unentschuldigt Column -->
+            <div class="kanban-column" 
+                 data-status="Unentschuldigt"
+                 ondrop={handleDrop}
+                 ondragover={handleDragOver}
+                 ondragenter={handleDragEnter}
+                 ondragleave={handleDragLeave}>
+                <div class="column-header unentschuldigt-header">
+                    <h3 class="column-title">Unentschuldigt</h3>
+                    <span class="record-count">({unentschuldigtCount})</span>
+                </div>
+                <div class="drop-zone" data-status="Unentschuldigt">
+                    <template for:each={unentschuldigtRecords} for:item="record">
+                        <div key={record.Id} 
+                             class="praktikant-card"
+                             draggable="true"
+                             data-record-id={record.Id}
+                             data-current-status="Unentschuldigt"
+                             ondragstart={handleDragStart}
+                             ondragend={handleDragEnd}
+                             ontouchstart={handleTouchStart}
+                             ontouchmove={handleTouchMove}
+                             ontouchend={handleTouchEnd}>
+                            <div class="card-content">
+                                <h4 class="praktikant-name">{record.Name_Anzeige__c}</h4>
+                                <div class="praktikant-details">
+                                    <p class="name-link">{record.Name_Link__c}</p>
+                                    <p class="taetigkeit">{record.Taetigkeit__c}</p>
+                                </div>
+                            </div>
+                            <div class="drag-handle">⋮⋮</div>
+                        </div>
+                    </template>
+                    <template if:true={showUnentschuldigtEmpty}>
+                        <div class="empty-column">
+                            <p>No records</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Anwesend Column -->
+            <div class="kanban-column" 
+                 data-status="Anwesend"
+                 ondrop={handleDrop}
+                 ondragover={handleDragOver}
+                 ondragenter={handleDragEnter}
+                 ondragleave={handleDragLeave}>
+                <div class="column-header anwesend-header">
+                    <h3 class="column-title">Anwesend</h3>
+                    <span class="record-count">({anwesendCount})</span>
+                </div>
+                <div class="drop-zone" data-status="Anwesend">
+                    <template for:each={anwesendRecords} for:item="record">
+                        <div key={record.Id} 
+                             class="praktikant-card"
+                             draggable="true"
+                             data-record-id={record.Id}
+                             data-current-status="Anwesend"
+                             ondragstart={handleDragStart}
+                             ondragend={handleDragEnd}
+                             ontouchstart={handleTouchStart}
+                             ontouchmove={handleTouchMove}
+                             ontouchend={handleTouchEnd}>
+                            <div class="card-content">
+                                <h4 class="praktikant-name">{record.Name_Anzeige__c}</h4>
+                                <div class="praktikant-details">
+                                    <p class="name-link">{record.Name_Link__c}</p>
+                                    <p class="taetigkeit">{record.Taetigkeit__c}</p>
+                                </div>
+                            </div>
+                            <div class="drag-handle">⋮⋮</div>
+                        </div>
+                    </template>
+                    <template if:true={showAnwesendEmpty}>
+                        <div class="empty-column">
+                            <p>No records</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Entschuldigt Column -->
+            <div class="kanban-column" 
+                 data-status="Entschuldigt"
+                 ondrop={handleDrop}
+                 ondragover={handleDragOver}
+                 ondragenter={handleDragEnter}
+                 ondragleave={handleDragLeave}>
+                <div class="column-header entschuldigt-header">
+                    <h3 class="column-title">Entschuldigt</h3>
+                    <span class="record-count">({entschuldigtCount})</span>
+                </div>
+                <div class="drop-zone" data-status="Entschuldigt">
+                    <template for:each={entschuldigtRecords} for:item="record">
+                        <div key={record.Id} 
+                             class="praktikant-card"
+                             draggable="true"
+                             data-record-id={record.Id}
+                             data-current-status="Entschuldigt"
+                             ondragstart={handleDragStart}
+                             ondragend={handleDragEnd}
+                             ontouchstart={handleTouchStart}
+                             ontouchmove={handleTouchMove}
+                             ontouchend={handleTouchEnd}>
+                            <div class="card-content">
+                                <h4 class="praktikant-name">{record.Name_Anzeige__c}</h4>
+                                <div class="praktikant-details">
+                                    <p class="name-link">{record.Name_Link__c}</p>
+                                    <p class="taetigkeit">{record.Taetigkeit__c}</p>
+                                </div>
+                            </div>
+                            <div class="drag-handle">⋮⋮</div>
+                        </div>
+                    </template>
+                    <template if:true={showEntschuldigtEmpty}>
+                        <div class="empty-column">
+                            <p>No records</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reason Modal for Entschuldigt Status -->
+        <template if:true={showReasonModal}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" 
+                     aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" 
+                                title="Close" onclick={closeReasonModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                            Reason for Entschuldigt Status
+                        </h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label" for="reason-input">
+                                Please provide a reason why this person is marked as Entschuldigt:
+                            </label>
+                            <div class="slds-form-element__control">
+                                <textarea id="reason-input" 
+                                         class="slds-textarea" 
+                                         placeholder="Enter reason here..."
+                                         value={reasonText}
+                                         onchange={handleReasonChange}
+                                         rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeReasonModal}>
+                            Cancel
+                        </button>
+                        <button class="slds-button slds-button_brand" 
+                                onclick={confirmStatusChange}
+                                disabled={isReasonEmpty}>
+                            Confirm
+                        </button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <!-- Touch Helper for Mobile Drag -->
+        <template if:true={isDragging}>
+            <div class="touch-helper" style={touchHelperStyle}>
+                <div class="praktikant-card dragging-card">
+                    <div class="card-content">
+                        <h4 class="praktikant-name">{draggedRecord.Name_Anzeige__c}</h4>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </lightning-card>
+</template>
