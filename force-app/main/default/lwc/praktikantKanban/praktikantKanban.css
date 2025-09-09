@@ -1,0 +1,343 @@
+/* Kanban Board Container */
+.kanban-container {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    min-height: 600px;
+    overflow-x: auto;
+}
+
+/* Kanban Columns */
+.kanban-column {
+    flex: 1;
+    min-width: 300px;
+    max-width: 350px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 0;
+    border: 2px dashed transparent;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.kanban-column.drag-over,
+.kanban-column.touch-drag-over {
+    border-color: #0176d3;
+    background-color: #e8f4ff;
+    transform: scale(1.02);
+}
+
+/* Column Headers */
+.column-header {
+    padding: 1rem;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.unentschuldigt-header {
+    background: linear-gradient(135deg, #d73527, #e74c3c);
+}
+
+.anwesend-header {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+.entschuldigt-header {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.column-title {
+    font-size: 1.1rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.record-count {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Drop Zone */
+.drop-zone {
+    padding: 0.5rem;
+    min-height: 500px;
+    position: relative;
+}
+
+/* Praktikant Cards */
+.praktikant-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid #e0e5ee;
+    cursor: grab;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    min-height: 80px;
+}
+
+.praktikant-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: #0176d3;
+}
+
+.praktikant-card:active,
+.praktikant-card.dragging,
+.praktikant-card.touch-dragging {
+    cursor: grabbing;
+    opacity: 0.8;
+    transform: rotate(2deg) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.praktikant-card.touch-dragging {
+    position: fixed;
+    pointer-events: none;
+}
+
+/* Card Content */
+.card-content {
+    flex: 1;
+}
+
+.praktikant-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #181818;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+}
+
+.praktikant-details {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.praktikant-details p {
+    margin: 0.25rem 0;
+    line-height: 1.2;
+}
+
+.name-link {
+    color: #0176d3;
+    font-weight: 500;
+}
+
+.taetigkeit {
+    color: #444;
+    font-style: italic;
+}
+
+/* Drag Handle */
+.drag-handle {
+    color: #ccc;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: grab;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+    color: #0176d3;
+    background: rgba(1, 118, 211, 0.1);
+}
+
+/* Empty Column State */
+.empty-column {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: #999;
+    font-style: italic;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Touch Helper for Mobile Dragging */
+.touch-helper {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.8;
+}
+
+.dragging-card {
+    transform: rotate(5deg) scale(1.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal Overrides */
+.slds-modal__container {
+    max-width: 500px;
+}
+
+.slds-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .kanban-container {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0.5rem;
+    }
+    
+    .kanban-column {
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .drop-zone {
+        min-height: 300px;
+    }
+    
+    .praktikant-card {
+        padding: 0.75rem;
+        min-height: 70px;
+        touch-action: none; /* Prevent default touch behaviors */
+    }
+    
+    .drag-handle {
+        font-size: 1.5rem;
+        padding: 0.5rem;
+    }
+    
+    .column-title {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .kanban-container {
+        padding: 0.25rem;
+        gap: 0.5rem;
+    }
+    
+    .column-header {
+        padding: 0.75rem;
+    }
+    
+    .praktikant-card {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .praktikant-name {
+        font-size: 0.9rem;
+    }
+    
+    .praktikant-details {
+        font-size: 0.8rem;
+    }
+}
+
+/* Touch-specific styles for tablets */
+@media (pointer: coarse) {
+    .praktikant-card {
+        min-height: 90px;
+        touch-action: none;
+    }
+    
+    .drag-handle {
+        font-size: 1.8rem;
+        padding: 0.75rem;
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .kanban-column {
+        border-width: 3px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .praktikant-card {
+        border-width: 2px;
+        border-color: #000;
+    }
+    
+    .column-header {
+        border: 2px solid #000;
+    }
+    
+    .empty-column {
+        border-color: #000;
+        color: #000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .praktikant-card,
+    .kanban-column,
+    .drag-handle {
+        transition: none;
+    }
+    
+    .praktikant-card:hover {
+        transform: none;
+    }
+    
+    .praktikant-card.dragging,
+    .praktikant-card.touch-dragging {
+        transform: scale(1.05);
+    }
+}
+
+/* Loading state */
+.slds-spinner_container {
+    position: relative;
+    min-height: 200px;
+}
+
+/* Focus states for accessibility */
+.praktikant-card:focus {
+    outline: 2px solid #0176d3;
+    outline-offset: 2px;
+}
+
+.drag-handle:focus {
+    outline: 2px solid #0176d3;
+    outline-offset: 1px;
+}
+
+/* Animation for smooth transitions */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.praktikant-card {
+    animation: slideIn 0.3s ease-out;
+}
